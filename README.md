@@ -13,15 +13,15 @@ dns.providers.gandi
 
 To use this module for the ACME DNS challenge, [configure the ACME issuer in your Caddy JSON](https://caddyserver.com/docs/json/apps/tls/automation/policies/issuer/acme/) like so:
 
-```
+```json
 {
-	"module": "acme",
-	"dns": {
-		"provider": {
-			"name": "gandi",
-			"api_token": "{env.GANDI_API_TOKEN}"
-		}
-	}
+  "module": "acme",
+  "dns": {
+    "provider": {
+      "name": "gandi",
+      "api_token": "{env.GANDI_API_TOKEN}"
+    }
+  }
 }
 ```
 
@@ -29,7 +29,7 @@ or with the Caddyfile:
 
 ```
 tls {
-	dns gandi {env.GANDI_API_TOKEN}
+  dns gandi {env.GANDI_API_TOKEN}
 }
 ```
 
