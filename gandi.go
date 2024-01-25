@@ -25,31 +25,30 @@ func (Provider) CaddyModule() caddy.ModuleInfo {
 // Implements caddy.Provisioner.
 func (p *Provider) Provision(ctx caddy.Context) error {
 	repl := caddy.NewReplacer()
-	p.Provider.APIToken = repl.ReplaceAll(p.Provider.APIToken, "")
+	p.Provider.BearerToken = repl.ReplaceAll(p.Provider.BearerToken, "")
 	return nil
 }
 
 // UnmarshalCaddyfile sets up the DNS provider from Caddyfile tokens. Syntax:
 //
-// gandi [<api_token>] {
-//     api_token <api_token>
-// }
-//
+//	gandi [<bearer_token>] {
+//	    bearer_token <bearer_token>
+//	}
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
 		if d.NextArg() {
-			p.Provider.APIToken = d.Val()
+			p.Provider.BearerToken = d.Val()
 		}
 		if d.NextArg() {
 			return d.ArgErr()
 		}
 		for nesting := d.Nesting(); d.NextBlock(nesting); {
 			switch d.Val() {
-			case "api_token":
-				if p.Provider.APIToken != "" {
-					return d.Err("API token already set")
+			case "bearer_token":
+				if p.Provider.BearerToken != "" {
+					return d.Err("Bearer token already set")
 				}
-				p.Provider.APIToken = d.Val()
+				p.Provider.BearerToken = d.Val()
 				if d.NextArg() {
 					return d.ArgErr()
 				}
@@ -58,7 +57,7 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 			}
 		}
 	}
-	if p.Provider.APIToken == "" {
+	if p.Provider.BearerToken == "" {
 		return d.Err("missing API token")
 	}
 	return nil
