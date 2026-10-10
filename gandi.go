@@ -26,6 +26,7 @@ func (Provider) CaddyModule() caddy.ModuleInfo {
 func (p *Provider) Provision(ctx caddy.Context) error {
 	repl := caddy.NewReplacer()
 	p.Provider.BearerToken = repl.ReplaceAll(p.Provider.BearerToken, "")
+	p.Provider.SharingId = repl.ReplaceAll(p.Provider.SharingId, "")
 	return nil
 }
 
@@ -33,6 +34,7 @@ func (p *Provider) Provision(ctx caddy.Context) error {
 //
 //	gandi [<bearer_token>] {
 //	    bearer_token <bearer_token>
+//	    sharing_id <sharing_id>
 //	}
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
@@ -48,7 +50,21 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 				if p.Provider.BearerToken != "" {
 					return d.Err("Bearer token already set")
 				}
+				if !d.NextArg() {
+					return d.ArgErr()
+				}
 				p.Provider.BearerToken = d.Val()
+				if d.NextArg() {
+					return d.ArgErr()
+				}
+			case "sharing_id":
+				if p.Provider.SharingId != "" {
+					return d.Err("Sharing id already set")
+				}
+				if !d.NextArg() {
+					return d.ArgErr()
+				}
+				p.Provider.SharingId = d.Val()
 				if d.NextArg() {
 					return d.ArgErr()
 				}
